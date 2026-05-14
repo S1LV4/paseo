@@ -58,6 +58,44 @@ export const SHERPA_ONNX_MODEL_CATALOG = {
     description: "NVIDIA Parakeet TDT v3 (offline NeMo transducer, multilingual).",
     aliases: ["parakeet", "parakeet-v3", "parakeet-tdt"],
   },
+  "nemo-stt-pt-fastconformer-int8": {
+    kind: "stt-offline",
+    archiveUrl:
+      "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-nemo-transducer-stt_pt_fastconformer_hybrid_large_pc-int8.tar.bz2",
+    extractedDir: "sherpa-onnx-nemo-transducer-stt_pt_fastconformer_hybrid_large_pc-int8",
+    requiredFiles: ["encoder.int8.onnx", "decoder.int8.onnx", "joiner.int8.onnx", "tokens.txt"],
+    description:
+      "NVIDIA NeMo FastConformer PT-BR (INT8, ~102 MB) — trained exclusively for Brazilian Portuguese, fast on CPU.",
+    aliases: ["nemo-pt", "fastconformer-pt", "stt-pt"],
+  },
+  "whisper-distil-large-v3": {
+    kind: "stt-offline",
+    archiveUrl:
+      "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-distil-large-v3.tar.bz2",
+    extractedDir: "sherpa-onnx-whisper-distil-large-v3",
+    requiredFiles: [
+      "distil-large-v3-encoder.int8.onnx",
+      "distil-large-v3-decoder.int8.onnx",
+      "distil-large-v3-tokens.txt",
+    ],
+    description:
+      "Distil-Whisper large-v3 (INT8, ~500 MB) — 6x faster than large-v3, multilingual, good Portuguese support.",
+    aliases: ["distil-large-v3", "distil-whisper", "whisper-distil"],
+  },
+  "whisper-large-v3": {
+    kind: "stt-offline",
+    archiveUrl:
+      "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-large-v3.tar.bz2",
+    extractedDir: "sherpa-onnx-whisper-large-v3",
+    requiredFiles: [
+      "large-v3-encoder.int8.onnx",
+      "large-v3-decoder.int8.onnx",
+      "large-v3-tokens.txt",
+    ],
+    description:
+      "OpenAI Whisper large-v3 (INT8, ~1.7 GB) — multilingual, excellent Portuguese support.",
+    aliases: ["whisper-large", "whisper-v3", "whisper"],
+  },
   "kitten-nano-en-v0_1-fp16": {
     kind: "tts",
     archiveUrl:

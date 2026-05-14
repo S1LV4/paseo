@@ -138,6 +138,73 @@ async function createLocalSttEngine(params: {
     };
   }
 
+  if (modelId === "nemo-stt-pt-fastconformer-int8") {
+    const modelDir = getLocalSpeechModelDir(modelsDir, modelId);
+    return {
+      kind: "offline",
+      engine: new SherpaOfflineRecognizerEngine(
+        {
+          model: {
+            kind: "nemo_transducer",
+            encoder: `${modelDir}/encoder.int8.onnx`,
+            decoder: `${modelDir}/decoder.int8.onnx`,
+            joiner: `${modelDir}/joiner.int8.onnx`,
+            tokens: `${modelDir}/tokens.txt`,
+          },
+          numThreads: 4,
+          debug: 0,
+        },
+        logger,
+      ),
+    };
+  }
+
+  if (modelId === "whisper-distil-large-v3") {
+    const modelDir = getLocalSpeechModelDir(modelsDir, modelId);
+    const language = process.env.PASEO_STT_LANGUAGE?.trim() || "pt";
+    return {
+      kind: "offline",
+      engine: new SherpaOfflineRecognizerEngine(
+        {
+          model: {
+            kind: "whisper",
+            encoder: `${modelDir}/distil-large-v3-encoder.int8.onnx`,
+            decoder: `${modelDir}/distil-large-v3-decoder.int8.onnx`,
+            tokens: `${modelDir}/distil-large-v3-tokens.txt`,
+            language,
+            task: "transcribe",
+          },
+          numThreads: 4,
+          debug: 0,
+        },
+        logger,
+      ),
+    };
+  }
+
+  if (modelId === "whisper-large-v3") {
+    const modelDir = getLocalSpeechModelDir(modelsDir, modelId);
+    const language = process.env.PASEO_STT_LANGUAGE?.trim() || "pt";
+    return {
+      kind: "offline",
+      engine: new SherpaOfflineRecognizerEngine(
+        {
+          model: {
+            kind: "whisper",
+            encoder: `${modelDir}/large-v3-encoder.int8.onnx`,
+            decoder: `${modelDir}/large-v3-decoder.int8.onnx`,
+            tokens: `${modelDir}/large-v3-tokens.txt`,
+            language,
+            task: "transcribe",
+          },
+          numThreads: 2,
+          debug: 0,
+        },
+        logger,
+      ),
+    };
+  }
+
   if (modelId === "paraformer-bilingual-zh-en") {
     const modelDir = getLocalSpeechModelDir(modelsDir, modelId);
     return {
