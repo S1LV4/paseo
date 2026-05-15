@@ -22,7 +22,7 @@ RUN npm run build:daemon
 FROM node:20-bookworm-slim
 
 RUN apt-get update && apt-get install -y \
-    tini \
+    tini bzip2 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
