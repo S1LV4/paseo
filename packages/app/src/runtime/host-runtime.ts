@@ -468,10 +468,13 @@ function createDefaultDeps(): HostRuntimeControllerDeps {
         });
       }
       if (connection.type === "directTcp") {
+        const inferredTls =
+          connection.useTls ??
+          (typeof window !== "undefined" && window.location?.protocol === "https:");
         return new DaemonClient({
           ...base,
           url: buildDaemonWebSocketUrl(connection.endpoint, {
-            useTls: connection.useTls ?? false,
+            useTls: inferredTls,
           }),
           ...(connection.password ? { password: connection.password } : {}),
         });
