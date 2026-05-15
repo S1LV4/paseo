@@ -94,6 +94,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            EXPO_PUBLIC_LOCAL_DAEMON=wss://ps.joaovs.dev
+            EXPO_PUBLIC_LOCAL_DAEMON=ps.joaovs.dev:443
           cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web
