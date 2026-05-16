@@ -38,9 +38,7 @@ RUN printf 'server {\n\
 }\n' > /etc/nginx/conf.d/default.conf
 
 RUN printf '#!/bin/sh\n\
-if [ -n "$PASEO_DAEMON_ENDPOINT" ]; then\n\
-  find /usr/share/nginx/html -name "*.js" -exec sed -i "s|__PASEO_DAEMON_ENDPOINT__|${PASEO_DAEMON_ENDPOINT}|g" {} +\n\
-fi\n\
+find /usr/share/nginx/html -name "*.js" -exec sed -i "s|__PASEO_DAEMON_ENDPOINT__|${PASEO_DAEMON_ENDPOINT:-}|g" {} +\n\
 exec nginx -g "daemon off;"\n' > /docker-entrypoint-paseo.sh && chmod +x /docker-entrypoint-paseo.sh
 
 EXPOSE 80
