@@ -1,30 +1,44 @@
-name: Build & Push Server Image
+name: Build & Push Web Image
 
 on:
   push:
     branches: [main, master]
     paths:
-      - "packages/server/**"
+      - "packages/app/**"
       - "packages/highlight/**"
-      - "packages/relay/**"
-      - "packages/cli/**"
-      - "package.json"
-      - "package-lock.json"
-      - "Dockerfile"
+      - "packages/expo-two-way-audio/**"
+      - "Dockerfile.web"
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository }}-web
 
 jobs:
-  build-server:
+  build-web:
     runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
       packages: write
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build dependencies
+        run: |
+          npm run build --workspace=@getpaseo/highlight
+          npm run build --workspace=@getpaseo/expo-two-way-audio || true
+
+      - name: Export web app
+        run: cd packages/app && npx expo export --platform web
+
       - uses: docker/setup-buildx-action@v3
 
       - name: Log in to GHCR
@@ -43,13 +57,12 @@ jobs:
             type=sha,prefix=
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push server
+      - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: Dockerfile.web
           platforms: linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max

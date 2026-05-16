@@ -18,11 +18,11 @@ RUN npm ci --ignore-scripts
 
 COPY . .
 
-ENV EXPO_PUBLIC_LOCAL_DAEMON=__PASEO_DAEMON_ENDPOINT__
-
-RUN npm run build --workspace=@getpaseo/highlight
-RUN npm run build --workspace=@getpaseo/expo-two-way-audio || true
-RUN cd packages/app && npx expo export --platform web
+RUN if [ ! -d packages/app/dist ]; then \
+      npm run build --workspace=@getpaseo/highlight && \
+      (npm run build --workspace=@getpaseo/expo-two-way-audio || true) && \
+      cd packages/app && npx expo export --platform web; \
+    fi
 
 FROM nginx:alpine
 
@@ -34,13 +34,8 @@ RUN printf 'server {\n\
     index index.html;\n\
     location / {\n\
         try_files $uri $uri/ /index.html;\n\
-        add_header Cache-Control "no-cache, must-revalidate";\n\
     }\n\
 }\n' > /etc/nginx/conf.d/default.conf
 
-RUN printf '#!/bin/sh\n\
-find /usr/share/nginx/html -name "*.js" -exec sed -i "s|__PASEO_DAEMON_ENDPOINT__|${PASEO_DAEMON_ENDPOINT:-}|g" {} +\n\
-exec nginx -g "daemon off;"\n' > /docker-entrypoint-paseo.sh && chmod +x /docker-entrypoint-paseo.sh
-
 EXPOSE 80
-CMD ["/docker-entrypoint-paseo.sh"]
+CMD ["nginx", "-g", "daemon off;"]
